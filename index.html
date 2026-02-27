@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Mio Milanese Lojistas - Pedidos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            padding: 16px 12px 100px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .logo {
+            max-width: 200px;
+            max-height: 80px;
+            object-fit: contain;
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            color: #2d3436;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            color: #636e72;
+            font-size: 0.95rem;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* ===== TELA DE CADASTRO ===== */
+        .regras-entrega {
+            background-color: #dfe6e9;
+            padding: 16px;
+            border-radius: 16px;
+            margin: 16px 0 24px;
+            font-size: 0.9rem;
+        }
+
+        .regras-entrega h3 {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2d3436;
+        }
+
+        .regras-entrega ul {
+            list-style: none;
+        }
+
+        .regras-entrega li {
+            padding: 4px 0;
+            color: #2d3436;
+            border-bottom: 1px dashed #b2bec3;
+        }
+
+        .regras-entrega li:last-child {
+            border-bottom: none;
+        }
+
+        .badge {
+            background-color: #0984e3;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        .tipo-cliente {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0;
+            background: white;
+            padding: 12px;
+            border-radius: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .tipo-btn {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .tipo-btn.active {
+            background-color: #00b894;
+            color: white;
+            border-color: #008b74;
+        }
+
+        .tipo-btn.safran.active {
+            background-color: #6c5ce7;
+            border-color: #4a3b9c;
+        }
+
+        .form-cadastro {
+            background: white;
+            padding: 20px;
+            border-radius: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .form-cadastro input, .form-cadastro select {
+            width: 100%;
+            padding: 14px 16px;
+            margin: 8px 0 16px;
+            border: 1px solid #dfe6e9;
+            border-radius: 14px;
+            font-size: 1rem;
+            background: #f8f9fa;
+        }
+
+        .form-cadastro label {
+            font-weight: 600;
+            color: #2d3436;
+            margin-left: 4px;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 16px 0;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .checkbox-container label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-continuar {
+            width: 100%;
+            padding: 16px;
+            background: #00b894;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn-continuar:hover {
+            background: #00a383;
+        }
+
+        /* ===== TELA DE CARDÁPIO ===== */
+        .cashback-badge {
+            background: linear-gradient(135deg, #fdc830, #f37335);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-weight: 700;
+            margin: 12px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(243, 115, 53, 0.3);
+        }
+
+        .header-cardapio {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .btn-voltar {
+            background: #e17055;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-voltar:hover {
+            background: #d63031;
+        }
+
+        .info-cliente {
+            font-size: 0.9rem;
+            color: #636e72;
+        }
+
+        .categoria-titulo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2d3436;
+            margin: 24px 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 3px solid #00b894;
+        }
+
+        .cardapio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .prato-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            border: 1px solid #f1f1f1;
+            transition: 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .prato-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .prato-card.selected {
+            border: 3px solid #00b894;
+        }
+
+        .prato-img {
+            width: 100%;
+            height: 100px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .prato-info {
+            padding: 10px 8px 12px;
+        }
+
+        .prato-nome {
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 3px;
+            color: #2d3436;
+            line-height: 1.2;
+        }
+
+        .prato-desc {
+            font-size: 0.65rem;
+            color: #636e72;
+            margin-bottom: 6px;
+            line-height: 1.2;
+            display: none;
+        }
+
+        .prato-preco {
+            font-weight: 700;
+            color: #00b894;
+            font-size: 0.95rem;
+        }
+
+        .badge-safran {
+            background-color: #6c5ce7;
+            color: white;
+            font-size: 0.55rem;
+            padding: 2px 4px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 3px;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 32px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .modal h2 {
+            margin-bottom: 16px;
+            color: #2d3436;
+        }
+
+        .opcao-grupo {
+            margin: 16px 0;
+        }
+
+        .opcao-titulo {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .opcoes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px,1fr));
+            gap: 8px;
+        }
+
+        .opcao-item {
+            background: #f1f3f5;
+            padding: 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+        }
+
+        .acompanhamento-item {
+            background: #f1f3f5;
+            padding: 10px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .acompanhamento-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .acompanhamento-btn {
+            background: #00b894;
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .acompanhamento-btn:hover {
+            background: #00a383;
+        }
+
+        .acompanhamento-count {
+            font-weight: 700;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .carrinho-flutuante {
+            position: fixed;
+            bottom: 20px;
+            left: 12px;
+            right: 12px;
+            max-width: 576px;
+            margin: 0 auto;
+            background: #2d3436;
+            color: white;
+            border-radius: 60px;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 900;
+        }
+
+        .carrinho-total {
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .carrinho-btn {
+            background: #00b894;
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .resumo-pedido {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .linha-resumo {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .total-geral {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #00b894;
+        }
+
+        .cashback-info {
+            background: #fef5e7;
+            padding: 16px;
+            border-radius: 16px;
+            margin: 16px 0;
+            border-left: 5px solid #f39c12;
+        }
+
+        .cashback-valor {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #f39c12;
+        }
+
+        .whatsapp-btn {
+            background: #25D366;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 18px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .alerta {
+            background: #ffe5e5;
+            color: #d63031;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 8px 0;
+            font-size: 0.9rem;
+        }
+
+        /* MELHORIAS - Destaque para tipo de pedido */
+        .tipo-pedido-destaque {
+            background: linear-gradient(135deg, #00b894, #00a383);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 16px;
+            margin: 12px 0;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .tipo-pedido-info {
+            font-size: 0.9rem;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== TELA 1: CADASTRO ===== -->
+<div id="telaCadastro" class="screen active">
+    <div class="header">
+        <div class="logo-container">
+            <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/aiDUKbIIHlndzqpt.png" alt="Mio Milanese Logo" class="logo">
+        </div>
+        <h1>Mio Milanese Lojistas</h1>
+        <p>Faça seu pedido, agende a retirada ou peça para entregarmos em sua loja</p>
+    </div>
+
+    <div class="regras-entrega">
+        <h3>⏰ Regras de entrega (segunda a sexta)</h3>
+        <ul>
+            <li>• Entrega 12:00 → pedir até 11:30</li>
+            <li>• Entrega 13:00 → pedir até 12:30</li>
+            <li>• Entrega 14:00 → pedir até 13:00</li>
+            <li>• Entrega 15:00 → pedir até 14:00</li>
+            <li>• Entrega 16:00 → pedir até 15:00</li>
+        </ul>
+        <div class="badge">⛔ Sem entregas após 16h</div>
+    </div>
+
+    <!-- SELEÇÃO TIPO CLIENTE -->
+    <div class="tipo-cliente">
+        <div id="btnShopping" class="tipo-btn active">🛍️ Lojista Shopping</div>
+        <div id="btnSafran" class="tipo-btn safran">🍽️ Lojista Safran</div>
+    </div>
+
+    <!-- CADASTRO RÁPIDO -->
+    <div class="form-cadastro">
+        <label>👤 Seu nome</label>
+        <input type="text" id="nomeCliente" placeholder="Ex: João Silva">
+
+        <label>🏢 Nome da loja</label>
+        <input type="text" id="lojaCliente" placeholder="Ex: Loja 203, Moda Center">
+
+        <label>📱 WhatsApp (com DDD)</label>
+        <input type="tel" id="telCliente" placeholder="11999999999">
+
+        <label>📍 Tipo de Pedido</label>
+        <select id="tipoRetirada">
+            <option value="local">🏪 Agendado para comer no local</option>
+            <option value="retirada">📦 Agendado para retirar delivery no balcão</option>
+            <option value="delivery">🏍️ Entregar na minha loja</option>
+        </select>
+
+        <label>🕒 Horário desejado</label>
+        <select id="horarioSelect"><option value="11:00">11:00</option><option value="12:00">12:00</option><option value="13:00">13:00</option><option value="14:00">14:00</option><option value="15:00">15:00</option><option value="16:00">16:00</option><option value="17:00">17:00</option><option value="18:00">18:00</option><option value="19:00">19:00</option><option value="20:00">20:00</option><option value="21:00">21:00</option><option value="22:00">22:00</option></select>
+        <p style="font-size:0.8rem; color:#e17055;" id="alertaHorario"></p>
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="lembrarDados">
+            <label for="lembrarDados">Lembrar meus dados na próxima vez</label>
+        </div>
+
+        <button class="btn-continuar" id="btnContinuar">Continuar para o Cardápio</button>
+    </div>
+</div>
+
+<!-- ===== TELA 2: CARDÁPIO ===== -->
+<div id="telaCardapio" class="screen">
+    <div class="header">
+        <div class="logo-container">
+            <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/aiDUKbIIHlndzqpt.png" alt="Mio Milanese Logo" class="logo">
+        </div>
+        <h1>Mio Milanese Lojistas</h1>
+    </div>
+
+    <div class="header-cardapio">
+        <button class="btn-voltar" id="btnVoltar">← Voltar</button>
+        <div class="info-cliente">
+            <strong id="nomeClienteExibir"></strong><br>
+            <small id="lojaClienteExibir"></small>
+        </div>
+    </div>
+
+    <!-- DESTAQUE DO TIPO DE PEDIDO -->
+    <div class="tipo-pedido-destaque" id="tipoPedidoDestaque">
+        🏪 Comer no local
+        <div class="tipo-pedido-info" id="tipoPedidoInfo">Sem taxa adicional</div>
+    </div>
+
+    <!-- CASHBACK EM DESTAQUE -->
+    <div class="cashback-badge" id="cashbackDestaque">
+        🎁 HOJE: 3% de cashback em todos os pedidos!
+    </div>
+
+    <!-- CARDÁPIO POR CATEGORIAS -->
+    <div id="cardapioContainer"></div>
+
+    <!-- MODAL PARA PERSONALIZAR PRATO -->
+    <div class="modal-overlay" id="modalPrato">
+        <div class="modal" id="modalContent"></div>
+    </div>
+
+    <!-- RESUMO DO PEDIDO / CARRINHO -->
+    <div class="resumo-pedido hidden" id="resumoPedido">
+        <h3>🛒 Seu pedido</h3>
+        <div id="itensCarrinho"></div>
+        <div class="linha-resumo">
+            <span>Subtotal</span>
+            <span id="subtotal">R$ 0,00</span>
+        </div>
+        <div class="linha-resumo hidden" id="linhaTaxa">
+            <span id="taxaLabel">Taxa entrega/embalagem</span>
+            <span id="taxaValor">R$ 2,90</span>
+        </div>
+        <div class="linha-resumo total-geral">
+            <span>TOTAL</span>
+            <span id="totalFinal">R$ 0,00</span>
+        </div>
+
+        <!-- CASHBACK -->
+        <div class="cashback-info" id="cashbackInfo">
+            <div style="display:flex; justify-content:space-between;">
+                <span>💰 Cashback desta compra:</span>
+                <span class="cashback-valor" id="cashbackValor">R$ 0,00</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:8px;">
+                <span>🏆 Saldo acumulado:</span>
+                <span id="saldoCashback">R$ 0,00</span>
+            </div>
+            <p style="font-size:0.8rem; margin-top:8px;">✔️ Válido por 30 dias • Mínimo R$20 para usar</p>
+        </div>
+
+        <!-- RESGATE DE CASHBACK -->
+        <div class="cashback-info" id="resgateInfo" style="display:none; background:#e8f5e9; border-left-color:#00b894; margin-top:12px;">
+            <div style="font-weight:700; color:#00b894; font-size:1rem; margin-bottom:8px;">🎉 Você tem saldo disponível para usar!</div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span>💰 Saldo disponível:</span>
+                <span style="font-weight:700; color:#00b894;" id="saldoResgate">R$ 0,00</span>
+            </div>
+            <p style="font-size:0.85rem; margin-bottom:10px;">Deseja usar seu cashback neste pedido? O valor integral será descontado.</p>
+            <div style="display:flex; gap:10px;">
+                <button id="btnUsarCashback" style="flex:1; padding:12px; border-radius:40px; background:#00b894; color:white; border:none; font-weight:600; cursor:pointer;">✅ Sim, usar agora</button>
+                <button id="btnNaoUsarCashback" style="flex:1; padding:12px; border-radius:40px; background:#eee; color:#333; border:none; font-weight:600; cursor:pointer;">❌ Não, guardar</button>
+            </div>
+        </div>
+
+        <!-- DESCONTO CASHBACK APLICADO -->
+        <div class="linha-resumo hidden" id="linhaDesconto" style="color:#00b894; font-weight:600;">
+            <span>🎁 Desconto cashback</span>
+            <span id="descontoCashback">- R$ 0,00</span>
+        </div>
+
+        <h4 style="margin:16px 0 8px;">💳 Pagamento</h4>
+        <select id="pagamentoTipo" style="width:100%; padding:14px; border-radius:40px; border:1px solid #ccc;">
+            <option value="debito">Débito</option>
+            <option value="credito">Crédito</option>
+            <option value="pix">Pix</option>
+            <option value="vr">Vale Refeição</option>
+            <option value="dinheiro">Dinheiro</option>
+        </select>
+
+        <div id="campoTroco" class="hidden" style="margin-top:12px;">
+            <label>Valor pago em dinheiro (R$):</label>
+            <input type="number" id="valorPago" placeholder="Ex: 50" step="0.01" style="width:100%; padding:14px; border-radius:40px;">
+            <p id="trocoCalculado" style="margin-top:8px; font-weight:600;"></p>
+        </div>
+
+        <button class="whatsapp-btn" id="enviarWhatsApp">📲 Enviar para WhatsApp</button>
+    </div>
+
+    <!-- CARRINHO FLUTUANTE -->
+    <div class="carrinho-flutuante" id="carrinhoFlutuante">
+        <div class="carrinho-total" id="carrinhoTotal">R$ 0,00</div>
+        <button class="carrinho-btn" id="verCarrinhoBtn">Ver carrinho</button>
+    </div>
+</div>
+
+<script>
+    // ==================== DADOS DO CARDÁPIO ====================
+    const cardapioShopping = {
+        "Pratos Executivos": [
+            { 
+                id: 1, 
+                nome: "Ovo Frito Duplo", 
+                desc: "Dois ovos fritos + bebida", 
+                preco: 18, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/fFonkykbhyyZMABv.jpeg"
+            },
+            { 
+                id: 2, 
+                nome: "Espaguete à Milanesa", 
+                desc: "Espaguete ao molho artesanal + milanesa de frango", 
+                preco: 22, 
+                img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663155286287/UN8LFVG2gDzY99KYA2gbrG/espagueteamilanesa_d799cfce.jpeg"
+            },
+            { 
+                id: 3, 
+                nome: "Frango Grelhado", 
+                desc: "Peito de frango grelhado + bebida", 
+                preco: 24, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/aTBasgROzDrSlnyl.jpeg"
+            },
+            { 
+                id: 4, 
+                nome: "Linguiça Grelhada", 
+                desc: "Linguiça grelhada + bebida", 
+                preco: 20, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/OXdpQJuhKGgSCZZK.jpeg"
+            },
+            { 
+                id: 5, 
+                nome: "Iscas de Carne Angus", 
+                desc: "Iscas de carne angus + bebida", 
+                preco: 28, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/LNAmXLDnfOTmZvtH.jpeg"
+            }
+        ],
+        "Parmegianas": [
+            { 
+                id: 6, 
+                nome: "Parmegiana Tradicional", 
+                desc: "Molho artesanal + queijo + escolha 2 acompanhamentos", 
+                preco: 30, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/XmhXGqdOmPxAvTDk.jpeg",
+                tipo: "parmegiana"
+            },
+            { 
+                id: 7, 
+                nome: "Mio Especial", 
+                desc: "Mio especial da casa + bebida", 
+                preco: 27, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/llXNwcfhtizeoDsq.jpeg"
+            }
+        ],
+        "Outros": [
+            { 
+                id: 8, 
+                nome: "Wrap Light", 
+                desc: "Tiras de filé de frango + queijo + alface + tomate + bebida", 
+                preco: 18, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/dLfikgJHQsTbYret.jpeg"
+            },
+            { 
+                id: 9, 
+                nome: "Wrap Frango Crispy", 
+                desc: "Tiras de filé de frango empanado + alface + molho especial + bebida", 
+                preco: 21, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/dLfikgJHQsTbYret.jpeg"
+            },
+            { 
+                id: 10, 
+                nome: "Caesar Salad Especial", 
+                desc: "Molho caesar artesanal + croutons + tiras de frango + bebida", 
+                preco: 22, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/dzffrnxJOsRyKIUf.jpeg"
+            }
+        ]
+    };
+
+    const cardapioSafran = {
+        "Pratos Executivos": [
+            { 
+                id: 1, 
+                nome: "Ovo Frito Duplo", 
+                desc: "Dois ovos fritos + bebida", 
+                preco: 18, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/fFonkykbhyyZMABv.jpeg"
+            },
+            { 
+                id: 2, 
+                nome: "Espaguete à Milanesa", 
+                desc: "Espaguete ao molho artesanal + milanesa de frango", 
+                preco: 22, 
+                img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663155286287/UN8LFVG2gDzY99KYA2gbrG/espagueteamilanesa_d799cfce.jpeg"
+            },
+            { 
+                id: 3, 
+                nome: "Frango Grelhado", 
+                desc: "Peito de frango grelhado + bebida", 
+                preco: 24, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/aTBasgROzDrSlnyl.jpeg"
+            },
+            { 
+                id: 4, 
+                nome: "Linguiça Grelhada", 
+                desc: "Linguiça grelhada + bebida", 
+                preco: 20, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/OXdpQJuhKGgSCZZK.jpeg"
+            },
+            { 
+                id: 5, 
+                nome: "Iscas de Carne Angus", 
+                desc: "Iscas de carne angus + bebida", 
+                preco: 28, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/LNAmXLDnfOTmZvtH.jpeg"
+            }
+        ],
+        "Parmegianas": [
+            { 
+                id: 6, 
+                nome: "Parmegiana Tradicional", 
+                desc: "Molho artesanal + queijo + arroz + fritas (fechado)", 
+                preco: 25, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/XmhXGqdOmPxAvTDk.jpeg",
+                tipo: "parmegiana_safran"
+            },
+            { 
+                id: 7, 
+                nome: "Mio Especial", 
+                desc: "Mio especial da casa + bebida", 
+                preco: 27, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/llXNwcfhtizeoDsq.jpeg"
+            }
+        ],
+        "Outros": [
+            { 
+                id: 8, 
+                nome: "Wrap Light", 
+                desc: "Tiras de filé de frango + queijo + alface + tomate + bebida", 
+                preco: 18, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/dLfikgJHQsTbYret.jpeg"
+            },
+            { 
+                id: 9, 
+                nome: "Wrap Frango Crispy", 
+                desc: "Tiras de filé de frango empanado + alface + molho especial + bebida", 
+                preco: 21, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/dLfikgJHQsTbYret.jpeg"
+            },
+            { 
+                id: 10, 
+                nome: "Caesar Salad Especial", 
+                desc: "Molho caesar artesanal + croutons + tiras de frango + bebida", 
+                preco: 22, 
+                img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663329348636/dzffrnxJOsRyKIUf.jpeg"
+            }
+        ]
+    };
+
+    // Bebidas e adicionais
+    const bebidasPadrao = ["Coca 200ml", "Coca Zero 200ml", "Água c/ gás", "Água s/ gás", "Sem bebida"];
+    const bebidasTurbinadas = ["Coca Lata", "Coca Zero Lata", "Fanta Laranja", "Fanta Uva", "Guaraná", "Sprite", "Schweppes Citrus", "Sprite Lemon Fresh", "Ice Tea Limão", "Ice Tea Pêssego"];
+    const acompanhamentosParmegianaOptions = ["Arroz Branco", "Fritas da Casa", "Caesar Salad"];
+
+    // ==================== ESTADO GLOBAL ====================
+    let tipoCliente = 'shopping';
+    let carrinho = [];
+    let saldoCashback = 0;
+    let cardapioAtual = cardapioShopping;
+    let acompanhamentosParmegianaCount = {};
+    let cashbackData = { valor: 0, dataExpiracao: null };
+    let usandoCashback = false;       // true quando cliente confirma usar o saldo
+    let zerarCashbackNoEnvio = false; // true para zerar após envio do pedido
+    const CASHBACK_MINIMO = 20;
+    const DIAS_VALIDADE_CASHBACK = 30;
+
+    // ==================== ELEMENTOS DOM ====================
+    const telaCadastro = document.getElementById('telaCadastro');
+    const telaCardapio = document.getElementById('telaCardapio');
+    const btnShopping = document.getElementById('btnShopping');
+    const btnSafran = document.getElementById('btnSafran');
+    const btnContinuar = document.getElementById('btnContinuar');
+    const btnVoltar = document.getElementById('btnVoltar');
+    const cardapioContainer = document.getElementById('cardapioContainer');
+    const modalOverlay = document.getElementById('modalPrato');
+    const modalContent = document.getElementById('modalContent');
+    const resumoPedido = document.getElementById('resumoPedido');
+    const carrinhoFlutuante = document.getElementById('carrinhoFlutuante');
+    const verCarrinhoBtn = document.getElementById('verCarrinhoBtn');
+    const enviarWhatsApp = document.getElementById('enviarWhatsApp');
+    const pagamentoTipo = document.getElementById('pagamentoTipo');
+    const campoTroco = document.getElementById('campoTroco');
+    const valorPago = document.getElementById('valorPago');
+    const trocoCalculado = document.getElementById('trocoCalculado');
+    const tipoRetirada = document.getElementById('tipoRetirada');
+    const horarioSelect = document.getElementById('horarioSelect');
+    const alertaHorario = document.getElementById('alertaHorario');
+    const nomeCliente = document.getElementById('nomeCliente');
+    const lojaCliente = document.getElementById('lojaCliente');
+    const telCliente = document.getElementById('telCliente');
+    const lembrarDados = document.getElementById('lembrarDados');
+    const nomeClienteExibir = document.getElementById('nomeClienteExibir');
+    const lojaClienteExibir = document.getElementById('lojaClienteExibir');
+    const cashbackDestaque = document.getElementById('cashbackDestaque');
+    const cashbackValor = document.getElementById('cashbackValor');
+    const saldoCashbackEl = document.getElementById('saldoCashback');
+    const tipoPedidoDestaque = document.getElementById('tipoPedidoDestaque');
+    const tipoPedidoInfo = document.getElementById('tipoPedidoInfo');
+
+    // ==================== FUNÇÕES DE ARMAZENAMENTO ====================
+    function salvarDados() {
+        if (lembrarDados.checked) {
+            const dados = {
+                nome: nomeCliente.value,
+                loja: lojaCliente.value,
+                tel: telCliente.value,
+                tipoRetirada: tipoRetirada.value,
+                tipoCliente: tipoCliente
+            };
+            localStorage.setItem('mioMilaneseCliente', JSON.stringify(dados));
+        }
+    }
+
+    function carregarDados() {
+        const dadosSalvos = localStorage.getItem('mioMilaneseCliente');
+        if (dadosSalvos) {
+            try {
+                const dados = JSON.parse(dadosSalvos);
+                nomeCliente.value = dados.nome || '';
+                lojaCliente.value = dados.loja || '';
+                telCliente.value = dados.tel || '';
+                tipoRetirada.value = dados.tipoRetirada || 'local';
+                
+                if (dados.tipoCliente === 'safran') {
+                    btnSafran.click();
+                } else {
+                    btnShopping.click();
+                }
+                
+                lembrarDados.checked = true;
+            } catch (e) {
+                console.log('Erro ao carregar dados salvos');
+            }
+        }
+    }
+
+    function limparDados() {
+        localStorage.removeItem('mioMilaneseCliente');
+        nomeCliente.value = '';
+        lojaCliente.value = '';
+        telCliente.value = '';
+        tipoRetirada.value = 'local';
+        lembrarDados.checked = false;
+    }
+
+    // ==================== FUNÇÕES ====================
+    function formatarMoeda(valor) {
+        return 'R$ ' + valor.toFixed(2).replace('.', ',');
+    }
+
+    function atualizarTipoPedidoDestaque() {
+        const tipo = tipoRetirada.value;
+        let titulo = '';
+        let info = '';
+
+        if (tipo === 'local') {
+            titulo = '🏪 Agendado para comer no local';
+            info = 'Sem taxa adicional';
+        } else if (tipo === 'retirada') {
+            titulo = '📦 Agendado para retirar delivery no balcão';
+            info = 'Taxa de embalagem: R$ 2,90';
+        } else if (tipo === 'delivery') {
+            titulo = '🏍️ Entregar na minha loja';
+            info = 'Taxa de entrega: R$ 2,90';
+        }
+
+        tipoPedidoDestaque.innerHTML = `${titulo}<div class="tipo-pedido-info">${info}</div>`;
+    }
+
+    function preencherHorarios() {
+        const hoje = new Date();
+        const diaSemana = hoje.getDay();
+        const tipoRetiradaValue = tipoRetirada.value;
+        const opcoes = [];
+
+        if (tipoRetiradaValue === 'delivery') {
+            if (diaSemana === 0 || diaSemana === 6) {
+                horarioSelect.innerHTML = '<option value="">Sem horarios disponiveis</option>';
+                return;
+            }
+            for (let h = 12; h <= 16; h++) {
+                opcoes.push(`${h.toString().padStart(2,'0')}:00`);
+            }
+        } else {
+            if (diaSemana === 0) {
+                for (let h = 12; h <= 20; h++) {
+                    opcoes.push(`${h.toString().padStart(2,'0')}:00`);
+                }
+            } else {
+                for (let h = 11; h <= 22; h++) {
+                    opcoes.push(`${h.toString().padStart(2,'0')}:00`);
+                }
+            }
+        }
+
+        horarioSelect.innerHTML = '';
+        opcoes.forEach(h => {
+            const option = document.createElement('option');
+            option.value = h;
+            option.textContent = h;
+            horarioSelect.appendChild(option);
+        });
+    }
+
+    function carregarCashbackArmazenado() {
+        // Verifica se o pedido anterior solicitou zeragem do cashback
+        const deveZerar = localStorage.getItem('cashbackZerarNoPedido');
+        if (deveZerar === 'true') {
+            cashbackData = { valor: 0, dataExpiracao: null };
+            localStorage.removeItem('cashbackData');
+            localStorage.removeItem('cashbackZerarNoPedido');
+            return;
+        }
+
+        const dados = localStorage.getItem('cashbackData');
+        if (dados) {
+            try {
+                cashbackData = JSON.parse(dados);
+                const agora = new Date();
+                if (cashbackData.dataExpiracao) {
+                    const dataExpiracao = new Date(cashbackData.dataExpiracao);
+                    if (agora > dataExpiracao) {
+                        cashbackData = { valor: 0, dataExpiracao: null };
+                        localStorage.removeItem('cashbackData');
+                    }
+                }
+            } catch (e) {
+                cashbackData = { valor: 0, dataExpiracao: null };
+                localStorage.removeItem('cashbackData');
+            }
+        }
+    }
+
+    function salvarCashbackArmazenado() {
+        localStorage.setItem('cashbackData', JSON.stringify(cashbackData));
+    }
+
+    function calcularCashback(total, horario) {
+        const agora = new Date();
+        const hora = agora.getHours();
+        const min = agora.getMinutes();
+
+        let percentual = 3;
+
+        // Regra 8%: Exclusivamente para pedidos da Rota 15h e 16h
+        if (horario === '15:00' || horario === '16:00') {
+            percentual = 8;
+        } else {
+            // Regra 5%: Com 1h de antecedência (se não for a rota de 8%)
+            const [hEntrega, mEntrega] = horario.split(':').map(Number);
+            const minutosEntrega = hEntrega * 60 + mEntrega;
+            const minutosAgora = hora * 60 + min;
+            
+            if ((minutosEntrega - minutosAgora) >= 60) {
+                percentual = 5;
+            }
+        }
+
+        cashbackDestaque.innerText = `🎁 HOJE: ${percentual}% de cashback em todos os pedidos!`;
+
+        return {
+            percentual,
+            valor: total * (percentual / 100)
+        };
+    }
+
+    function renderCardapio() {
+        let html = '';
+        
+        for (const [categoria, pratos] of Object.entries(cardapioAtual)) {
+            html += `<div class="categoria-titulo">${categoria}</div>`;
+            html += `<div class="cardapio-grid">`;
+            
+            pratos.forEach(prato => {
+                const imagemStyle = prato.img ? `background-image: url('${prato.img}');` : 'background: linear-gradient(145deg, #dfe6e9, #b2bec3);';
+                
+                html += `
+                    <div class="prato-card" data-id="${prato.id}">
+                        <div class="prato-img" style="${imagemStyle}"></div>
+                        <div class="prato-info">
+                            <div class="prato-nome">${prato.nome}</div>
+                            <div class="prato-preco">${formatarMoeda(prato.preco)}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+        }
+        
+        cardapioContainer.innerHTML = html;
+
+        document.querySelectorAll('.prato-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const id = parseInt(card.dataset.id);
+                abrirModal(id);
+            });
+        });
+    }
+
+    function obterPratoPorId(id) {
+        for (const pratos of Object.values(cardapioAtual)) {
+            const prato = pratos.find(p => p.id === id);
+            if (prato) return prato;
+        }
+        return null;
+    }
+
+    function abrirModal(idPrato) {
+        const prato = obterPratoPorId(idPrato);
+        if (!prato) return;
+
+        let bebidasHtml = '';
+        bebidasPadrao.forEach(b => {
+            bebidasHtml += `<label class="opcao-item"><input type="radio" name="bebida" value="${b}" checked> ${b}</label>`;
+        });
+
+        let turbinarHtml = '';
+        bebidasTurbinadas.forEach(b => {
+            turbinarHtml += `<label class="opcao-item"><input type="checkbox" name="turbinar" value="${b}"> ${b} (+9,90)</label>`;
+        });
+
+        let acompanhamentosHtml = '';
+        
+        if (prato.tipo === "parmegiana" && tipoCliente === 'shopping') {
+            acompanhamentosHtml = `
+                <div class="opcao-grupo">
+                    <div class="opcao-titulo">➕ Escolha 2 acompanhamentos</div>
+                    <div id="acompanhamentosContainer">
+                        ${acompanhamentosParmegianaOptions.map(acc => `
+                            <div class="acompanhamento-item">
+                                <span>${acc}</span>
+                                <div class="acompanhamento-controls">
+                                    <button class="acompanhamento-btn" onclick="diminuirAcompanhamento('${acc}')">−</button>
+                                    <span class="acompanhamento-count" data-acc="${acc}">0</span>
+                                    <button class="acompanhamento-btn" onclick="aumentarAcompanhamento('${acc}')">+</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div id="alertaAcompanhamentos" class="alerta hidden"></div>
+                </div>
+            `;
+        }
+
+        modalContent.innerHTML = `
+            <h2>${prato.nome}</h2>
+            <p style="margin-bottom:16px;">${prato.desc}</p>
+            <p style="font-size:1.4rem; font-weight:700; color:#00b894;">${formatarMoeda(prato.preco)}</p>
+
+            <div class="opcao-grupo">
+                <div class="opcao-titulo">🥤 Bebida grátis</div>
+                <div class="opcoes-grid">${bebidasHtml}</div>
+            </div>
+
+            <div class="opcao-grupo">
+                <div class="opcao-titulo">⚡ Turbinar bebida (R$9,90)</div>
+                <div class="opcoes-grid">${turbinarHtml}</div>
+            </div>
+
+            ${acompanhamentosHtml}
+
+            <div class="opcao-grupo">
+                <label>📝 Observação</label>
+                <input type="text" id="obsPrato" placeholder="Ex: sem cebola, ponto da carne..." style="width:100%; padding:12px; border-radius:20px;">
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button id="cancelarModal" style="flex:1; padding:14px; border-radius:40px; background:#eee;">Cancelar</button>
+                <button id="adicionarCarrinho" style="flex:2; padding:14px; border-radius:40px; background:#00b894; color:white; border:none; font-weight:600;">Adicionar</button>
+            </div>
+        `;
+
+        modalOverlay.style.display = 'flex';
+
+        document.getElementById('cancelarModal').addEventListener('click', () => {
+            modalOverlay.style.display = 'none';
+            acompanhamentosParmegianaCount = {};
+        });
+
+        document.getElementById('adicionarCarrinho').addEventListener('click', () => {
+            if (prato.tipo === "parmegiana" && tipoCliente === 'shopping') {
+                const totalAcompanhamentos = Object.values(acompanhamentosParmegianaCount).reduce((a, b) => a + b, 0);
+                if (totalAcompanhamentos !== 2) {
+                    document.getElementById('alertaAcompanhamentos').innerText = '⚠️ Você deve escolher exatamente 2 acompanhamentos!';
+                    document.getElementById('alertaAcompanhamentos').classList.remove('hidden');
+                    return;
+                }
+            }
+
+            const bebidaSel = document.querySelector('input[name="bebida"]:checked')?.value || 'Sem bebida';
+            const turbinarSel = Array.from(document.querySelectorAll('input[name="turbinar"]:checked')).map(el => el.value);
+            const obsSel = document.getElementById('obsPrato').value;
+
+            let precoItem = prato.preco;
+            precoItem += turbinarSel.length * 9.90;
+
+            let acompanhamentosDesc = '';
+            if (prato.tipo === "parmegiana" && tipoCliente === 'shopping') {
+                acompanhamentosDesc = Object.entries(acompanhamentosParmegianaCount)
+                    .filter(([_, count]) => count > 0)
+                    .map(([acc, count]) => count > 1 ? `${count}x ${acc}` : acc)
+                    .join(', ');
+            }
+
+            carrinho.push({
+                idPrato: idPrato,
+                nome: prato.nome,
+                preco: precoItem,
+                bebida: bebidaSel,
+                turbinar: turbinarSel,
+                acompanhamentos: acompanhamentosDesc,
+                obs: obsSel
+            });
+
+            modalOverlay.style.display = 'none';
+            acompanhamentosParmegianaCount = {};
+            atualizarCarrinho();
+        });
+    }
+
+    window.aumentarAcompanhamento = function(acc) {
+        if (!acompanhamentosParmegianaCount[acc]) {
+            acompanhamentosParmegianaCount[acc] = 0;
+        }
+        acompanhamentosParmegianaCount[acc]++;
+        document.querySelector(`[data-acc="${acc}"]`).innerText = acompanhamentosParmegianaCount[acc];
+    };
+
+    window.diminuirAcompanhamento = function(acc) {
+        if (acompanhamentosParmegianaCount[acc] && acompanhamentosParmegianaCount[acc] > 0) {
+            acompanhamentosParmegianaCount[acc]--;
+            document.querySelector(`[data-acc="${acc}"]`).innerText = acompanhamentosParmegianaCount[acc];
+        }
+    };
+
+    function atualizarCarrinho() {
+        const subtotal = carrinho.reduce((sum, item) => sum + item.preco, 0);
+        const taxa = (tipoRetirada.value !== 'local') ? 2.90 : 0;
+        const totalBruto = subtotal + taxa;
+
+        // Calcula cashback desta compra (sobre o total bruto)
+        const cashback = calcularCashback(totalBruto, horarioSelect.value);
+        document.getElementById('cashbackValor').innerText = formatarMoeda(cashback.valor);
+
+        // Saldo acumulado = saldo salvo + cashback desta compra
+        const saldoAcumulado = cashbackData.valor + cashback.valor;
+        document.getElementById('saldoCashback').innerText = formatarMoeda(saldoAcumulado);
+
+        // Desconto aplicado se cliente optou por usar cashback (limitado ao total bruto)
+        const desconto = usandoCashback ? Math.min(cashbackData.valor, totalBruto) : 0;
+        const totalFinal = totalBruto - desconto;
+
+        document.getElementById('subtotal').innerText = formatarMoeda(subtotal);
+        document.getElementById('totalFinal').innerText = formatarMoeda(totalFinal);
+        document.getElementById('carrinhoTotal').innerText = formatarMoeda(totalFinal);
+
+        const linhaTaxa = document.getElementById('linhaTaxa');
+        if (taxa > 0) {
+            linhaTaxa.classList.remove('hidden');
+            const taxaLabel = tipoRetirada.value === 'retirada' ? 'Taxa de embalagem' : 'Taxa de entrega';
+            document.getElementById('taxaLabel').innerText = taxaLabel;
+            document.getElementById('taxaValor').innerText = formatarMoeda(taxa);
+        } else {
+            linhaTaxa.classList.add('hidden');
+        }
+
+        // Linha de desconto cashback
+        const linhaDesconto = document.getElementById('linhaDesconto');
+        if (usandoCashback && desconto > 0) {
+            linhaDesconto.classList.remove('hidden');
+            document.getElementById('descontoCashback').innerText = '- ' + formatarMoeda(desconto);
+        } else {
+            linhaDesconto.classList.add('hidden');
+        }
+
+        // Bloco de resgate: exibir apenas se saldo >= R$20 e cliente ainda não decidiu
+        const resgateInfo = document.getElementById('resgateInfo');
+        if (cashbackData.valor >= CASHBACK_MINIMO && !usandoCashback && carrinho.length > 0) {
+            resgateInfo.style.display = 'block';
+            document.getElementById('saldoResgate').innerText = formatarMoeda(cashbackData.valor);
+        } else {
+            resgateInfo.style.display = 'none';
+        }
+
+        let itensHtml = '';
+        carrinho.forEach((item, idx) => {
+            itensHtml += `
+                <div style="background:#f8f9fa; padding:12px; border-radius:12px; margin-bottom:8px;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <strong>${item.nome}</strong>
+                        <button onclick="removerCarrinho(${idx})" style="background:#ff7675; color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer;">×</button>
+                    </div>
+                    <div style="font-size:0.8rem; color:#636e72; margin-top:4px;">
+                        ${item.bebida}<br>
+                        ${item.turbinar.length > 0 ? item.turbinar.join(', ') + '<br>' : ''}
+                        ${item.acompanhamentos ? item.acompanhamentos + '<br>' : ''}
+                        ${item.obs ? '<em>' + item.obs + '</em>' : ''}
+                    </div>
+                    <div style="font-weight:700; color:#00b894; margin-top:4px;">${formatarMoeda(item.preco)}</div>
+                </div>
+            `;
+        });
+
+        document.getElementById('itensCarrinho').innerHTML = itensHtml || '<p style="color:#999;">Nenhum item no carrinho</p>';
+
+        if (carrinho.length > 0) {
+            resumoPedido.classList.remove('hidden');
+            carrinhoFlutuante.style.display = 'flex';
+        } else {
+            resumoPedido.classList.add('hidden');
+            carrinhoFlutuante.style.display = 'none';
+            // Se esvaziar o carrinho, cancela uso do cashback
+            usandoCashback = false;
+        }
+    }
+
+    window.removerCarrinho = function(idx) {
+        carrinho.splice(idx, 1);
+        atualizarCarrinho();
+    };
+
+    // ==================== EVENT LISTENERS ====================
+    btnShopping.addEventListener('click', () => {
+        tipoCliente = 'shopping';
+        cardapioAtual = cardapioShopping;
+        btnShopping.classList.add('active');
+        btnSafran.classList.remove('active');
+        tipoRetirada.innerHTML = '<option value="local">🏪 Agendado para comer no local</option><option value="retirada">📦 Agendado para retirar delivery no balcão</option><option value="delivery">🏍️ Entregar na minha loja</option>';
+        tipoRetirada.value = 'local';
+        preencherHorarios();
+        atualizarTipoPedidoDestaque();
+        atualizarCarrinho();
+    });
+
+    btnSafran.addEventListener('click', () => {
+        tipoCliente = 'safran';
+        cardapioAtual = cardapioSafran;
+        btnSafran.classList.add('active');
+        btnShopping.classList.remove('active');
+        tipoRetirada.innerHTML = '<option value="local">🏪 Agendado para comer no local</option><option value="retirada">📦 Agendado para retirar delivery no balcão</option>';
+        tipoRetirada.value = 'local';
+        preencherHorarios();
+        atualizarTipoPedidoDestaque();
+        atualizarCarrinho();
+    });
+
+    btnContinuar.addEventListener('click', () => {
+        const nome = nomeCliente.value.trim();
+        const loja = lojaCliente.value.trim();
+        const tel = telCliente.value.trim();
+
+        if (!nome || !loja || !tel) {
+            alert('Por favor, preencha todos os campos!');
+            return;
+        }
+
+        salvarDados();
+
+        nomeClienteExibir.innerText = nome;
+        lojaClienteExibir.innerText = loja;
+
+        telaCadastro.classList.remove('active');
+        telaCardapio.classList.add('active');
+
+        renderCardapio();
+        atualizarTipoPedidoDestaque();
+        atualizarCarrinho();
+    });
+
+    btnVoltar.addEventListener('click', () => {
+        carrinho = [];
+        telaCardapio.classList.remove('active');
+        telaCadastro.classList.add('active');
+        atualizarCarrinho();
+    });
+
+    tipoRetirada.addEventListener('change', () => {
+        preencherHorarios();
+        atualizarTipoPedidoDestaque();
+        atualizarCarrinho();
+    });
+    
+    horarioSelect.addEventListener('change', atualizarCarrinho);
+
+    pagamentoTipo.addEventListener('change', () => {
+        if (pagamentoTipo.value === 'dinheiro') {
+            campoTroco.classList.remove('hidden');
+        } else {
+            campoTroco.classList.add('hidden');
+        }
+    });
+
+    valorPago.addEventListener('input', () => {
+        const total = parseFloat(document.getElementById('totalFinal').innerText.replace('R$ ', '').replace(',', '.'));
+        const pago = parseFloat(valorPago.value) || 0;
+        const troco = pago - total;
+        trocoCalculado.innerText = troco >= 0 ? `Troco: ${formatarMoeda(troco)}` : 'Valor insuficiente';
+    });
+
+    verCarrinhoBtn.addEventListener('click', () => {
+        resumoPedido.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // ==================== BOTÕES DE RESGATE DE CASHBACK ====================
+    document.getElementById('btnUsarCashback').addEventListener('click', () => {
+        usandoCashback = true;
+        zerarCashbackNoEnvio = true;
+        atualizarCarrinho();
+    });
+
+    document.getElementById('btnNaoUsarCashback').addEventListener('click', () => {
+        usandoCashback = false;
+        zerarCashbackNoEnvio = false;
+        document.getElementById('resgateInfo').style.display = 'none';
+        atualizarCarrinho();
+    });
+
+    enviarWhatsApp.addEventListener('click', () => {
+        const nome = nomeCliente.value || 'Cliente';
+        const loja = lojaCliente.value || 'Sem loja';
+        const tel = telCliente.value || 'Sem telefone';
+        const horario = horarioSelect.value || '12:00';
+        const retirada = tipoRetirada.value;
+        const pagamento = pagamentoTipo.value;
+
+        let tipoRetiradaTexto = '';
+        if (retirada === 'local') {
+            tipoRetiradaTexto = 'Agendado para comer no local';
+        } else if (retirada === 'retirada') {
+            tipoRetiradaTexto = 'Agendado para retirar delivery no balcão';
+        } else if (retirada === 'delivery') {
+            tipoRetiradaTexto = 'Entregar na minha loja';
+        }
+
+        let mensagem = `*Pedido Mio Milanese*\n\n`;
+        mensagem += `👤 *Cliente:* ${nome}\n`;
+        mensagem += `🏢 *Loja:* ${loja}\n`;
+        mensagem += `📱 *WhatsApp:* ${tel}\n`;
+        mensagem += `🕒 *Horário:* ${horario}\n`;
+        mensagem += `📍 *Tipo de Pedido:* ${tipoRetiradaTexto}\n`;
+        mensagem += `💳 *Pagamento:* ${pagamento}\n\n`;
+        mensagem += `*Itens do pedido:*\n`;
+
+        carrinho.forEach(item => {
+            mensagem += `• ${item.nome} - ${formatarMoeda(item.preco)}\n`;
+            if (item.bebida) mensagem += `  🥤 ${item.bebida}\n`;
+            if (item.turbinar.length > 0) mensagem += `  ⚡ ${item.turbinar.join(', ')}\n`;
+            if (item.acompanhamentos) mensagem += `  ➕ ${item.acompanhamentos}\n`;
+            if (item.obs) mensagem += `  📝 ${item.obs}\n`;
+        });
+
+        const taxa = (retirada !== 'local') ? 2.90 : 0;
+        const subtotal = carrinho.reduce((sum, item) => sum + item.preco, 0);
+        const totalBruto = subtotal + taxa;
+        const cashback = calcularCashback(totalBruto, horario);
+
+        mensagem += `\n*Subtotal:* ${formatarMoeda(subtotal)}\n`;
+        if (taxa > 0) mensagem += `*Taxa:* ${formatarMoeda(taxa)}\n`;
+
+        // Se cliente usou cashback, aplica desconto na mensagem (limitado ao total bruto)
+        if (usandoCashback && cashbackData.valor > 0) {
+            const desconto = Math.min(cashbackData.valor, totalBruto);
+            const totalComDesconto = totalBruto - desconto;
+            mensagem += `*Total bruto:* ${formatarMoeda(totalBruto)}\n`;
+            mensagem += `🎁 *Desconto cashback usado:* - ${formatarMoeda(desconto)}\n`;
+            mensagem += `*TOTAL A PAGAR:* ${formatarMoeda(totalComDesconto)}\n`;
+            mensagem += `\n💰 *Cashback desta compra:* ${formatarMoeda(cashback.valor)} (${cashback.percentual}%) — acumulado no próximo pedido`;
+
+            // Marcar para zerar o saldo no próximo carregamento
+            localStorage.setItem('cashbackZerarNoPedido', 'true');
+
+            // Salvar o cashback desta compra para o próximo ciclo
+            const novaExpiracao = new Date();
+            novaExpiracao.setDate(novaExpiracao.getDate() + DIAS_VALIDADE_CASHBACK);
+            const novoCashbackData = { valor: cashback.valor, dataExpiracao: novaExpiracao.toISOString() };
+            // Guardamos temporariamente para ser carregado após a zeragem
+            localStorage.setItem('cashbackDataProximo', JSON.stringify(novoCashbackData));
+        } else {
+            mensagem += `*TOTAL:* ${formatarMoeda(totalBruto)}\n`;
+            mensagem += `\n🎁 *Cashback desta compra:* ${formatarMoeda(cashback.valor)} (${cashback.percentual}%)`;
+
+            // Acumula o cashback desta compra no saldo existente
+            const novoSaldo = cashbackData.valor + cashback.valor;
+            const novaExpiracao = new Date();
+            novaExpiracao.setDate(novaExpiracao.getDate() + DIAS_VALIDADE_CASHBACK);
+            cashbackData = { valor: novoSaldo, dataExpiracao: novaExpiracao.toISOString() };
+            salvarCashbackArmazenado();
+        }
+
+        // ENVIAR direto para o número 5512996605636
+        const urlWhatsApp = `https://wa.me/5512996605636?text=${encodeURIComponent(mensagem)}`;
+        window.open(urlWhatsApp, '_blank');
+    });
+
+    // ==================== INICIALIZAÇÃO ====================
+    preencherHorarios();
+    carregarDados();
+
+    // Carrega cashback salvo (e trata zeragem + cashback do próximo ciclo)
+    carregarCashbackArmazenado();
+
+    // Se havia cashback do próximo ciclo guardado (após uso do saldo), carrega agora
+    const cashbackProximo = localStorage.getItem('cashbackDataProximo');
+    if (cashbackProximo) {
+        try {
+            cashbackData = JSON.parse(cashbackProximo);
+            salvarCashbackArmazenado();
+        } catch (e) {}
+        localStorage.removeItem('cashbackDataProximo');
+    }
+</script>
+
+</body>
+</html>
